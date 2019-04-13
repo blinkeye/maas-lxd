@@ -1,7 +1,7 @@
 config:
   raw.lxc: |-
     lxc.cgroup.devices.allow = c 10:237 rwm
-    lxc.aa_profile = unconfined
+    lxc.apparmor.profile = unconfined
     lxc.cgroup.devices.allow = b 7:* rwm
   security.privileged: "true"
   user.network-config: |
@@ -23,13 +23,14 @@ config:
     #cloud-config
     bootcmd:
       - ln -s /dev/null /etc/systemd/system/avahi-daemon.service
+    apt_sources:
+      - source: "ppa:maas/stable"
     package_upgrade: true
     packages:
       - bridge-utils
       - maas
       - qemu-kvm
       - libvirt-bin
-      - virtinst
     write_files:
       - content: |
           <network>
@@ -41,7 +42,7 @@ config:
     runcmd:
       - [systemctl, restart, networking.service]
       - [maas, createadmin, --username=admin, --password=admin, --email=admin]
-      - [adduser, maas, libvirtd]
+      - [adduser, maas, libvirt]
       - [skill, -KILL, -u, maas]
       - [virsh, net-define, /var/lib/libvirt/qemu/network.xml]
       - [virsh, net-autostart, maas]
