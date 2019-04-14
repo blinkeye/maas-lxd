@@ -9,12 +9,10 @@ config:
     config:
       - type: physical
         name: eth0
-      - type: physical
-        name: eth1
       - type: bridge
         name: br0
         bridge_interfaces:
-          - eth1
+          - eth0
         subnets:
           - type: dhcp
   user.user-data: |
@@ -55,11 +53,6 @@ description: Setus up a bridge in the LXD
 devices:
   eth0:
     name: eth0
-    nictype: bridged
-    parent: lxdbr0
-    type: nic
-  eth1:
-    name: eth1
     nictype: bridged
     parent: lxdbr0
     type: nic
