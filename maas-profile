@@ -9,8 +9,6 @@ config:
     config:
       - type: physical
         name: eth0
-        subnets:
-          - type: dhcp
       - type: physical
         name: eth1
       - type: bridge
@@ -43,6 +41,7 @@ config:
       - [systemctl, restart, networking.service]
       - [maas, createadmin, --username=admin, --password=admin, --email=admin]
       - [adduser, maas, libvirt]
+      - chsh -s /bin/bash maas && su - maas bash -c "ssh-keygen -f ~/.ssh/id_rsa -N ''" && cat /var/lib/maas/.ssh/id_rsa.pub | tee -a /home/ubuntu/.ssh/authorized_keys
       - [skill, -KILL, -u, maas]
       - [virsh, net-define, /var/lib/libvirt/qemu/network.xml]
       - [virsh, net-autostart, maas]
