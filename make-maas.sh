@@ -13,11 +13,11 @@ echo "Sleeping to wait for IP"
 sleep 10
 
 # Setup LXD forward for pxe requests
-IPADDRESS=$(lxc info $CONTAINER | awk -F"[: \t]+" '/eth0:.*inet[^6]/ {print $4}')
-echo "Setting up pxe redirect for IP $IPADDRESS"
-if lxc network set lxdbr0 raw.dnsmasq dhcp-boot=pxelinux.0,$CONTAINER,$IPADDRESS
-    then
-	systemctl reload snap.lxd.daemon
+IPADDRESS=$(lxc info $CONTAINER | awk -F"[: \t]+" '/br0:.*inet[^6]/ {print $4}')
+if [[ $IPADDRESS =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+	echo "Setting up pxe redirect for IP $IPADDRESS"
+	lxc network set lxdbr0 raw.dnsmasq dhcp-boot=pxelinux.0,$CONTAINER,$IPADDRESS
+	echo "MAAS will become available at: http://$IPADDRESS:5240/MAAS with user/password admin/admin"
+else
+	echo "Abort. This is not a valid ip address: $IPADDRESS"
 fi
-
-echo "MAAS will become available at: http://$IPADDRESS:5240/MAAS with user/password admin/admin"
