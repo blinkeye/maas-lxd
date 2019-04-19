@@ -27,12 +27,14 @@ config:
       - maas
       - qemu-kvm
       - libvirt-bin
+    locale: en_US.UTF-8
+    timezone: Europe/Zurich
     write_files:
       - content: |
           <network>
-          <name>maas</name>
-          <forward mode="bridge"/>
-          <bridge name="br0"/>
+            <name>maas</name>
+            <forward mode="bridge"/>
+            <bridge name="br0"/>
           </network>
         path: /var/lib/libvirt/qemu/network.xml
     runcmd:
